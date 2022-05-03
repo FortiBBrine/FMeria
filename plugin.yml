@@ -1,0 +1,87 @@
+
+name: FMeria
+main: me.FortiBrine.FMeria.FMeria
+version: 1.8.6
+
+author: IJustFortiLive
+description: "Плагин на фракции"
+
+commands:
+  hp:
+    description: "Вылечить игрока"
+    usage: /hp <никнейм>
+  f:
+    description: "Выход из фракции"
+    usage: /f leave
+  gov:
+    description: "Отправление сообщения в гос новости"
+    usage: /gov <текст>
+  d:
+    description: "Отправление сообщения в департамент"
+    usage: "§7/d [Сообщение]"
+  fmeria:
+    description: "Перезагрузка конфигурации"
+    usage: /fmeria reload
+  invite:
+    description: "Пригласить игрока"
+    usage: /invite <никнейм>
+  uninvite:
+    description: "Уволить игрока"
+    usage: /uninvite <никнейм>
+  rb:
+    description: "НРП Рация фракции"
+    usage: /rb <текст>
+  fonline:
+    description: "Игрока которые в сети фракции"
+    usage: /fonline 
+  rr:
+    description: "РП Рация фракции"
+    usage: /rr <текст>
+  fhome:
+    description: "Телепортация на базу фракции"
+    usage: /fhome
+  setfhome:
+    description: "Установить базу фракции"
+    usage: /setfhome
+  leaders:
+    description: "Посмотреть лидеров фракции"
+    usage: /leaders
+  inv:
+    description: "Принять или отклонить приглашение"
+    usage: /inv
+  uprang:
+    description: "Повысить игрока"
+    usage: /uprang <никнейм>
+  fblock:
+    description: "Заблокировать игрока"
+    usage: /fblock <никнейм>
+  funblock:
+    description: "Разблокировать игрока"
+    usage: /funblock <никнейм>
+  downrang:
+    description: "Понизить игрока"
+    usage: /downrang <никнейм>
+  fvig:
+    description: "Выдать выговор"
+    usage: /fvig <никнейм>
+  funvig:
+    description: "Снять выговор"
+    usage: /funvig <никнейм>
+  setfname:
+    description: "Установить название рангу"
+    usage: /setfname <ранг> <никнейм>
+  setrank:
+    description: "Установить ранг игроку"
+    usage: /setrank 
+  setsalary:
+    description: "Установить зарплату рангу"
+    usage: /setsalary <ранг> <количество>
+  fbalance:
+    description: "Управление балансом фракции"
+    usage: /fbalance
+  law:
+    description: "Управление законами сервера"
+    usage: "/law <del/delcategory/setcategory/set/list/settime>"
+  makeleader:
+    description: "Установить лидера фракции"
+    usage: "/makeleader [-/никнейм]"

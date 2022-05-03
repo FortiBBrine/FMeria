@@ -1,0 +1,72 @@
+value:
+  time: 5
+
+message:
+  nonFaction: "§cВы не состоите во фракции!"
+  payday: 
+   - "Вам была выдана зарплата в размере %salary%."
+   - "=========================="
+  d: "§c(D) §7[%faction%]§9 %rank% %player%: %msg%"
+  rb: "§7(( §c(R) §7[%faction%]§9 %rank% %player%: %msg% §7))"
+  r: "§c(R) §7[%faction%]§9 %rank% %player%: %msg%"
+  fhome: "Вас на такси довезли на базу вашей фракции!"
+  noneName: "Не в организации"
+  noneRank: "Гражданин"
+  nonHospitalFaction: "§cЭту команду может использовать только фракция - Больница."
+  nonMeriaFaction: "§cЭту команду может использовать только фракция - Мэрия."
+  nonRank: "§cДля этой команды нужен выше ранг!"
+  errorPlayer: "§cВы не можете вылечить себя."
+  notOnline: "§cИгрок не онлайн"
+  playerHeal: "§f%faction §7>>>§f%player вылечил %player2."
+  playerHealMessage: "Вас вылечил %player."
+  distance: "§cИгрок слишком далеко!"
+  NumberFormatException: "§4Ошибка: §fВведите число."
+  successChangeCategory: "Вы успешно установили название категории."
+  successDeleteCategory: "Вы успешно удалили категорию!"
+  successSetLawName: "Вы успешно установили название закону!"
+  dontFindCategory: "Такой категории не существует!"
+  successDelLawName: "Вы успешно удалили закон!"
+  successSetLawTime: "Вы успешно установили время закону!"
+  lawTitle: "Панель законов"
+  makeNonLeader: "§fЛидер фракции %faction §cснят."
+  makeLeader: "§fНа лидера фракции %faction попал - §7%user"
+  nonLeader: "§4Ошибка: §fРанг лидера ещё не был установлен."
+  nonAdminRank: "§4Ошибка: §fРанг администратора ещё не был установлен."
+  factionNotEquals: "§4Ошибка: §fИгрок не состоит в вашей фракции"
+  makeleaderUsage: "/makeleader [-/Никнейм]"
+  playerAdminLeader: "§4Ошибка: §fВы не можете сами себя поставить на лидера!"
+  leadersCmd:
+    noOnline:
+     - "" 
+     - "§cНет лидеров онлайн!"
+     - ""
+    print1: 
+     - "Лидеры онлайн:"
+     - ""
+    print2:
+     - "§1[§f%faction§1] §7%rank %player (( %user ))"
+    print3:
+     - "§fВсего §4%size §fчеловек."
+  categoryItem:
+    title: "Категория: %category.%categoryName"
+    lore:
+     - "Категория: %category."
+     - "Название: %categoryName"
+  lawItem:
+    title: "Закон: %category.%law"
+    lore:
+     - "Категория: %category"
+     - "Название: %lawName"
+     - "Время: %lawTime минут"
+  lawUsage:
+   - "§7Упралвение законами:"
+   - "§7/law set <ID категории> <ID закона> <название> - §fУстановить название закону"
+   - "§7/law setcategory <ID категории> <название> - §fУстановить название категории"
+   - "§7/law delcategory <ID категории> - §fУдалить категорию"
+   - "§7/law del <ID категории> <ID закона> - §fУдалить закон"
+   - "§7/law settime <ID категории> <ID закона> <время> - §fУстановить время закону"
+   - "§7/law list - §fЗаконы"
+  gov: 
+   - "§7=========================="
+   - "§7[Гос.Новости] [%faction] %rank %player: %message"
+   - "§7=========================="
