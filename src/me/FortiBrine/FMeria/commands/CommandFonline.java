@@ -1,6 +1,9 @@
 package me.FortiBrine.FMeria.commands;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,7 +27,7 @@ public class CommandFonline implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Âû íå èãðîê!");
+			sender.sendMessage("Ð’Ñ‹ Ð½Ðµ Ð¸Ð³Ñ€Ð¾Ðº!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
@@ -45,15 +48,40 @@ public class CommandFonline implements CommandExecutor {
 			p.sendMessage(messageConfig.getString("message.nonFaction"));
 			return true;
 		}
-		for (Player p1 : Bukkit.getOnlinePlayers()) {
 
-			if (plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false).contains(p1.getName())) {
-				String rank=plugin.getConfig().getString(faction+".ranks."+plugin.getConfig().getString(faction+".users."+p1.getName()));
-				int vigs=plugin.getConfig().getInt(faction+".vigs."+p1.getName());
-				
-				String res = "§c["+rank+"] §7"+p1.getName()+"§f ["+vigs+"/3]";
-				p.sendMessage(res);
+		Set<String> keys = plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
+		List<Player> players = new ArrayList<>();
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+
+			if (keys.contains(player.getName())) {
+				players.add(player);
 			}
+		}
+		
+		for (String s : messageConfig.getStringList("message.fonlineCmd.print1")) {
+			s = s.replace("%size", ""+players.size());
+			p.sendMessage(s);
+		}
+		
+		for (Player player : players) {
+			for (String s : messageConfig.getStringList("message.fonlineCmd.print2")) {
+				int rank = plugin.getConfig().getInt(faction+".users."+player.getName());
+				int vigs = plugin.getConfig().getInt(faction+".vigs."+player.getName());
+				s = s.replace("%faction", plugin.getConfig().getString(faction+".name"));
+				s = s.replace("%rank", ranks.get(rank - 1));
+				s = s.replace("%user", player.getName());
+				s = s.replace("%player", player.getDisplayName());
+				s = s.replace("%vigs", ""+vigs);
+				
+				p.sendMessage(s);
+			}
+		}
+		
+		for (String s : messageConfig.getStringList("message.fonlineCmd.print3")) {
+			s = s.replace("%size", ""+players.size());
+			p.sendMessage(s);
 		}
 
 		return true;

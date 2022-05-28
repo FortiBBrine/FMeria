@@ -4,9 +4,11 @@ package me.FortiBrine.FMeria.commands;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,17 +28,17 @@ public class CommandFunBlock implements CommandExecutor {
 	}
 	
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage("Р’С‹ РЅРµ РёРіСЂРѕРє!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length!=1) {
-			p.sendMessage("§7/funblock [Никнейм]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -55,22 +57,36 @@ public class CommandFunBlock implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<9) {
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size() - 2;
+		if (rank<needRank) {
 			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
+		
+		boolean offline = false;
+		OfflinePlayer op2 = Bukkit.getOfflinePlayer(args[0]);
+		offline = op2.isOnline() ? false : true;
+		
 		Player p2 = Bukkit.getPlayer(args[0]);
 		
-		plugin.getConfig().set(faction+".fblock."+p2.getName(), null);
+		plugin.getConfig().set(faction+".fblock."+(offline ? op2.getName() : p2.getName()), null);
 		plugin.saveConfig();
 		plugin.reloadConfig();
 		
+		String message = messageConfig.getString("message.funblock");
+		
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%user1", p.getName());
+		message = message.replace("%user2", offline ? op2.getName() : p2.getName());
+		message = message.replace("%player1", p.getDisplayName());
+		message = message.replace("%player2", offline ? op2.getName() : p2.getDisplayName());
 		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 		for (Player ps : Bukkit.getOnlinePlayers()) {
 			if (players.contains(ps.getName())) {
-				ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §f"+p.getName()+" убрал из чс фракции "+p2.getName()+"!");
+				ps.sendMessage(message);
 			}
 		}
 

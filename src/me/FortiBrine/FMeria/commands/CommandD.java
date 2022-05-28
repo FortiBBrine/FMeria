@@ -30,7 +30,7 @@ public class CommandD implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("�� �� �����!");
+			sender.sendMessage("Вы не игрок!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
@@ -67,7 +67,7 @@ public class CommandD implements CommandExecutor {
 		YamlConfiguration msgs = YamlConfiguration.loadConfiguration(this.messages);
 		String message = msgs.getString("message.d");
 		message = message.replace("%faction%", plugin.getConfig().getString(faction+".name"));
-		message = message.replace("%rank%", ranks.get(rank));
+		message = message.replace("%rank%", ranks.get(rank - 1));
 		message = message.replace("%player%", p.getName());
 		message = message.replace("%msg%", msg);
 		List<String> players = new ArrayList<String>();
@@ -83,6 +83,7 @@ public class CommandD implements CommandExecutor {
 			if (players.contains(p1.getName())) {
 				p1.sendMessage(message);
 			}
+			
 		}
 		return true;
 	}

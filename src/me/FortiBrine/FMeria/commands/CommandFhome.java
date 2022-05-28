@@ -30,7 +30,7 @@ public class CommandFhome implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage("Р’С‹ РЅРµ РёРіСЂРѕРє!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
@@ -52,7 +52,7 @@ public class CommandFhome implements CommandExecutor {
 			return true;
 		}
 		if (plugin.getConfig().getString(faction+".fhome.x")==null || plugin.getConfig().getString(faction+".fhome.y")==null || plugin.getConfig().getString(faction+".fhome.z")==null || plugin.getConfig().getString(faction+".fhome.world")==null) {
-			p.sendMessage("§4Ошибка:§c У вашей фракции нет базы!");
+			p.sendMessage(messageConfig.getString("message.hasnotFhome"));
 			return true;
 		}
 		String world = plugin.getConfig().getString(faction+".fhome.world");
@@ -68,7 +68,6 @@ public class CommandFhome implements CommandExecutor {
 		p.teleport(loc);
 		YamlConfiguration messages = YamlConfiguration.loadConfiguration(plugin.messages);
 		p.sendMessage(messages.getString("message.fhome"));
-		
 		
 		return true;
 	}

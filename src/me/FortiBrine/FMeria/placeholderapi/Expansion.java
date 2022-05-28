@@ -75,7 +75,7 @@ public class Expansion extends PlaceholderExpansion {
     		int rank = plugin.getConfig().getInt(faction+".users."+player.getName());
     		
     		//return plugin.getConfig().getString(faction+".ranks."+plugin.getConfig().getString(faction+".users."+player.getName()));
-    		return ranks.get(rank + 1);
+    		return ranks.get(rank - 1);
         }
         
         if (identifier.equals("name")) {

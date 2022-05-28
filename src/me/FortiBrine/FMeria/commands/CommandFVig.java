@@ -4,6 +4,7 @@ package me.FortiBrine.FMeria.commands;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -30,14 +31,13 @@ public class CommandFVig implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage("Р’С‹ РЅРµ РёРіСЂРѕРє!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length<1) {
-			p.sendMessage("§7/fvig [Никнейм]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -56,7 +56,9 @@ public class CommandFVig implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<9) {
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size() - 2;
+		if (rank<needRank) {
 			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
@@ -81,13 +83,17 @@ public class CommandFVig implements CommandExecutor {
 				break;
 			}
 		}
+		if (faction2 == null) {
+			p.sendMessage(messageConfig.getString("message.factionNotEquals"));
+			return true;
+		}
 		if (!faction2.equals(faction)) {
 			p.sendMessage(messageConfig.getString("message.factionNotEquals"));
 			return true;
 		}
 		int rank2 = plugin.getConfig().getInt(faction+".users."+p2.getName());
 		if (rank2>=rank) {
-			p.sendMessage("§cВы не можете данному игроку выдать выговор!");
+			p.sendMessage(messageConfig.getString("message.CannotFvig"));
 			return true;
 		}
 		
@@ -104,11 +110,20 @@ public class CommandFVig implements CommandExecutor {
 			plugin.getConfig().set(faction+".vigs."+p2.getName(), null);
 			plugin.saveConfig();
 			plugin.reloadConfig();
+			
+			String message = messageConfig.getString("message.fvig");
+			
+			message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+			message = message.replace("%user1", p.getName());
+			message = message.replace("%user2", p2.getName());
+			message = message.replace("%player1", p.getDisplayName());
+			message = message.replace("%player2", p2.getDisplayName());
+			
 			Set<String> players = new HashSet<String>();
 			players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 			for (Player ps : Bukkit.getOnlinePlayers()) {
 				if (players.contains(ps.getName())) {
-					ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §f"+p.getName()+" выдал выговор "+p2.getName()+"!");
+					ps.sendMessage(message);
 				}
 			}
 			return true;
@@ -118,11 +133,19 @@ public class CommandFVig implements CommandExecutor {
 		plugin.saveConfig();
 		plugin.reloadConfig();
 		
+		String message = messageConfig.getString("message.fvig");
+		
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%user1", p.getName());
+		message = message.replace("%user2", p2.getName());
+		message = message.replace("%player1", p.getDisplayName());
+		message = message.replace("%player2", p2.getDisplayName());
+		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 		for (Player ps : Bukkit.getOnlinePlayers()) {
 			if (players.contains(ps.getName())) {
-				ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §f"+p.getName()+" выдал выговор "+p2.getName()+"!");
+				ps.sendMessage(message);
 			}
 		}
 		return true;

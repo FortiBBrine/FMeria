@@ -10,6 +10,7 @@ message:
   rb: "§7(( §c(R) §7[%faction%]§9 %rank% %player%: %msg% §7))"
   r: "§c(R) §7[%faction%]§9 %rank% %player%: %msg%"
   fhome: "Вас на такси довезли на базу вашей фракции!"
+  hasnotFhome: "§4Ошибка:§c У вашей фракции нет базы!"
   noneName: "Не в организации"
   noneRank: "Гражданин"
   nonHospitalFaction: "§cЭту команду может использовать только фракция - Больница."
@@ -35,6 +36,35 @@ message:
   factionNotEquals: "§4Ошибка: §fИгрок не состоит в вашей фракции"
   makeleaderUsage: "/makeleader [-/Никнейм]"
   playerAdminLeader: "§4Ошибка: §fВы не можете сами себя поставить на лидера!"
+  notDownrang: "§cВы не можете понизить данного игрока!"
+  Downrang: "§f%faction§7 >>> §f%user1 понизил %user2 %oldRank -> %newRank"
+  fbalance:
+    usage:
+     - "§7Баланс:§c %money%"
+     - "/fbalance money [pay/take] [Количество]"
+    notEnoughMoney: "§4Ошибка:§c У вас недостаточно денег!"
+    notEnoughMoneyFaction: "§4Ошибка:§c На балансе фракции недостаточно денег!"
+    payMoney: "§f%faction§7 >>> §f%user положил на банка фракции %money$"
+    takeMoney: "§f%faction§7 >>> §f%user снял с банка фракции %money$"
+  CannotFblock: "§cВы не можете заблокировать данного игрока!"
+  fblock: "§f%faction§7 >>> §f%user1 заблокировал %user2"
+  fleave: "§f%faction§7 >>> §f%user покинул фракцию!"
+  reloadConfig: "§7Конфигурация перезагружена"
+  reloadConfigPermission: "§4Ошибка:§f У вас нет прав."
+  fonlineCmd:
+    print1: 
+     - "Участники фракции онлайн:"
+     - ""
+    print2:
+     - "§1[§f%faction§1] §7%rank %player (( %user )) [%vigs/3]"
+    print3:
+     - "§fВсего §4%size §fчеловек."
+  funblock: "§f%faction§7 >>> §f%user1 разблокировал %user2"
+  CannotFunvig: "§cВы не можете данному игроку снять выговор!"
+  funvig: "§f%faction§7 >>> §f%user1 снял выговор %user2"
+  CannotFvig: "§cВы не можете данному игроку выдать выговор!"
+  fvig: "§f%faction§7 >>> §f%user1 выдал выговор %user2"
+  notGov: "§cДоступно только гос.сотрудникам!"
   leadersCmd:
     noOnline:
      - "" 

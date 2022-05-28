@@ -2,6 +2,7 @@ meria:
   name: "Мэрия"
   leader: 10
   adminRank: 11
+  gov: true
   ranks:
     - "Ранг 1"
     - "Ранг 2"

@@ -27,14 +27,13 @@ public class CommandGov implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage("Р’С‹ РЅРµ РёРіСЂРѕРє!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length<1) {
-			p.sendMessage("§7/gov [сообщение]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -53,16 +52,18 @@ public class CommandGov implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<9) {
-			p.sendMessage("§cВаш ранг слишком маленький!");
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size() - 2;
+		if (rank<needRank) {
+			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
 		boolean gov = plugin.getConfig().getBoolean(faction+".gov");
 		if (gov!=true) {
-			p.sendMessage("§cДоступно только гос.сотрудникам!");
+			p.sendMessage(messageConfig.getString("message.notGov"));
 			return true;
 		}
-		String rankname = plugin.getConfig().getString(faction+".ranks."+plugin.getConfig().getString(faction+".users."+p.getName()));
+		String rankname = ranks.get(rank - 1);
 		String msg = "";
 		for (String i : args) msg+=(i+" ");
 		msg = msg.trim();

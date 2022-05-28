@@ -12,16 +12,16 @@ commands:
     usage: /hp <никнейм>
   f:
     description: "Выход из фракции"
-    usage: /f leave
+    usage: "§7/f leave"
   gov:
     description: "Отправление сообщения в гос новости"
-    usage: /gov <текст>
+    usage: "/gov [Сообщение]"
   d:
     description: "Отправление сообщения в департамент"
     usage: "§7/d [Сообщение]"
   fmeria:
     description: "Перезагрузка конфигурации"
-    usage: /fmeria reload
+    usage: "§7/fmeria reload"
   invite:
     description: "Пригласить игрока"
     usage: /invite <никнейм>
@@ -54,19 +54,19 @@ commands:
     usage: /uprang <никнейм>
   fblock:
     description: "Заблокировать игрока"
-    usage: /fblock <никнейм>
+    usage: "§7/fblock [Никнейм]"
   funblock:
     description: "Разблокировать игрока"
-    usage: /funblock <никнейм>
+    usage: "§7/funblock [Никнейм]"
   downrang:
     description: "Понизить игрока"
-    usage: /downrang <никнейм>
+    usage: "§7/downrang [никнейм]"
   fvig:
     description: "Выдать выговор"
-    usage: /fvig <никнейм>
+    usage: "§7/fvig [Никнейм]"
   funvig:
     description: "Снять выговор"
-    usage: /funvig <никнейм>
+    usage: "§7/funvig [Никнейм]"
   setfname:
     description: "Установить название рангу"
     usage: /setfname <ранг> <никнейм>
@@ -85,3 +85,8 @@ commands:
   makeleader:
     description: "Установить лидера фракции"
     usage: "/makeleader [-/никнейм]"
+
+permissions:
+  fmeria.reload:
+    description: "Право на перезапуск плагина"
+    default: true

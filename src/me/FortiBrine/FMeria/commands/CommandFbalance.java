@@ -3,6 +3,7 @@ package me.FortiBrine.FMeria.commands;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -31,7 +32,7 @@ public class CommandFbalance implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage("Р’С‹ РЅРµ РёРіСЂРѕРє!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
@@ -52,13 +53,17 @@ public class CommandFbalance implements CommandExecutor {
 			p.sendMessage(messageConfig.getString("message.nonFaction"));
 			return true;
 		}
+		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size() - 2;
 		if (args.length<3) {
-			p.sendMessage("§7Баланс:§c %money%".replace("%money%", ""+plugin.getConfig().getInt(faction+".money")));
-			p.sendMessage("/fbalance money [pay/take] [Количество]");
+			for (String s : messageConfig.getStringList("message.fbalance.usage")) {
+				s = s.replace("%money%", ""+plugin.getConfig().getInt(faction+".money"));
+				p.sendMessage(s);
+			}
 			return true;
 		}
-		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<9) {
+		if (rank<needRank) {
 			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
@@ -68,13 +73,13 @@ public class CommandFbalance implements CommandExecutor {
 				try {
 					amount = Integer.parseInt(args[2]);
 				} catch (NumberFormatException nfe) {
-					p.sendMessage("§4Ошибка:§c Введите число!");
+					p.sendMessage(messageConfig.getString("message.NumberFormatException"));
 					return true;
 				}	
 				
 				boolean success = (boolean) EconomyManager.takeMoney(p, amount);
 				if (success!=true) {
-					p.sendMessage("§4Ошибка:§c У вас недостаточно денег!");
+					p.sendMessage(messageConfig.getString("message.fbalance.notEnoughMoney"));
 					return true;
 				}
 				int balance = plugin.getConfig().getInt(faction+".money");
@@ -82,11 +87,19 @@ public class CommandFbalance implements CommandExecutor {
 				plugin.getConfig().set(faction+".money", balance);
 				plugin.saveConfig();
 				plugin.reloadConfig();
+				
+				String message = messageConfig.getString("message.fbalance.payMoney");
+				
+				message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+				message = message.replace("%user", p.getName());
+				message = message.replace("%player", p.getDisplayName());
+				message = message.replace("%money", ""+amount);
+				
 				Set<String> players = new HashSet<String>();
 				players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 				for (Player ps : Bukkit.getOnlinePlayers()) {
 					if (players.contains(ps.getName())) {
-						ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §fИгрок "+p.getName()+" пополнил баланс фракции на "+amount+"!");
+						ps.sendMessage(message);
 					}
 				}
 				return true;
@@ -96,13 +109,13 @@ public class CommandFbalance implements CommandExecutor {
 				try {
 					amount = Integer.parseInt(args[2]);
 				} catch (NumberFormatException nfe) {
-					p.sendMessage("§4Ошибка:§c Введите число!");
+					p.sendMessage(messageConfig.getString("message.NumberFormatException"));
 					return true;
 				}	
 				
 				int balance = plugin.getConfig().getInt(faction+".money");
 				if (balance<amount) {
-					p.sendMessage("§4Ошибка:§c На балансе фракции недостаточно денег!");
+					p.sendMessage(messageConfig.getString("message.fbalance.notEnoughMoneyFaction"));
 					return true;
 				}
 				balance-=amount;
@@ -110,22 +123,34 @@ public class CommandFbalance implements CommandExecutor {
 				plugin.getConfig().set(faction+".money", balance);
 				plugin.saveConfig();
 				plugin.reloadConfig();
+				
+				String message = messageConfig.getString("message.fbalance.takeMoney");
+				
+				message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+				message = message.replace("%user", p.getName());
+				message = message.replace("%player", p.getDisplayName());
+				message = message.replace("%money", ""+amount);				
+				
 				Set<String> players = new HashSet<String>();
 				players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 				for (Player ps : Bukkit.getOnlinePlayers()) {
 					if (players.contains(ps.getName())) {
-						ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §fИгрок "+p.getName()+" снял с баланс фракции "+amount+"!");
+						ps.sendMessage(message);
 					}
 				}
 				return true;
 			}
-			p.sendMessage("§7Баланс:§c %money%".replace("%money%", ""+plugin.getConfig().getInt(faction+".money")));
-			p.sendMessage("/fbalance money [pay/take] [Количество]");
+			for (String s : messageConfig.getStringList("message.fbalance.usage")) {
+				s = s.replace("%money%", ""+plugin.getConfig().getInt(faction+".money"));
+				p.sendMessage(s);
+			}
 			return true;
 		}
 		
-		p.sendMessage("§7Баланс:§c %money%".replace("%money%", ""+plugin.getConfig().getInt(faction+".money")));
-		p.sendMessage("/fbalance money [pay/take] [Количество]");
+		for (String s : messageConfig.getStringList("message.fbalance.usage")) {
+			s = s.replace("%money%", ""+plugin.getConfig().getInt(faction+".money"));
+			p.sendMessage(s);
+		}
 		return true;
 	}
 

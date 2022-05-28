@@ -27,14 +27,13 @@ public class CommandFLeave implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Âû íå èãðîê!");
+			sender.sendMessage("Ð’Ñ‹ Ð½Ðµ Ð¸Ð³Ñ€Ð¾Ðº!");
 			return true;
 		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length!=1 || !args[0].equals("leave")) {
-			p.sendMessage("§7/f leave");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -53,11 +52,17 @@ public class CommandFLeave implements CommandExecutor {
 			return true;
 		}
 		
+		String message = messageConfig.getString("message.fleave");
+		
+		message = message.replace("%faction", faction+".name");
+		message = message.replace("%user", p.getName());
+		message = message.replace("%player", p.getDisplayName());
+		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 		for (Player ps : Bukkit.getOnlinePlayers()) {
 			if (players.contains(ps.getName())) {
-				ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §fÈãðîê "+p.getName()+" ïîêèíóë ôðàêöèþ!");
+				ps.sendMessage("Â§f"+plugin.getConfig().getString(faction+".name")+"Â§7 >>> Â§f"+p.getName()+" Ð¿Ð¾ÐºÐ¸Ð½ÑƒÐ» Ñ„Ñ€Ð°ÐºÑ†Ð¸ÑŽ!");
 			}
 		}
 		plugin.getConfig().set(faction+".users."+p.getName(), null);
