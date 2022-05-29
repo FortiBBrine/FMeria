@@ -35,6 +35,11 @@ import me.FortiBrine.FMeria.listeners.LawInventoryListener;
 
 public class loadUtil {
 	
+	public static void loadTabCompleters(FMeria plugin) {
+		
+		plugin.getCommand("setrank").setTabCompleter(new CommandSetrank(plugin));
+	}
+	
 	public static void loadCommands(FMeria plugin) {
 		
 		plugin.getCommand("f").setExecutor(new CommandFLeave(plugin));

@@ -3,6 +3,7 @@ package me.FortiBrine.FMeria.commands;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -26,15 +27,15 @@ public class CommandRb implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length<1) {
-			p.sendMessage("§7/rb [сообщение]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -53,15 +54,23 @@ public class CommandRb implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
+		
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		
 		String msg = "";
 		for (String i : args) msg+=(i+" ");
 		msg.trim();
 		YamlConfiguration msgs = YamlConfiguration.loadConfiguration(plugin.messages);
 		String message = msgs.getString("message.rb");
-		message = message.replace("%faction%", plugin.getConfig().getString(faction+".name"));
-		message = message.replace("%rank%", plugin.getConfig().getString(faction+".ranks."+rank));
-		message = message.replace("%player%", p.getName());
-		message = message.replace("%msg%", msg);
+		
+		String rankname = ranks.get(rank - 1);
+		
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%rank", rankname);
+		message = message.replace("%player", p.getDisplayName());
+		message = message.replace("%user", p.getName());
+		message = message.replace("%message", msg);
+		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 		for (Player ps : Bukkit.getOnlinePlayers()) {

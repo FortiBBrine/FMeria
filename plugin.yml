@@ -1,7 +1,7 @@
 
 name: FMeria
 main: me.FortiBrine.FMeria.FMeria
-version: 1.8.6
+version: 1.9
 
 author: IJustFortiLive
 description: "Плагин на фракции"
@@ -9,13 +9,13 @@ description: "Плагин на фракции"
 commands:
   hp:
     description: "Вылечить игрока"
-    usage: /hp <никнейм>
+    usage: "§7/hp [Никнейм]"
   f:
     description: "Выход из фракции"
     usage: "§7/f leave"
   gov:
     description: "Отправление сообщения в гос новости"
-    usage: "/gov [Сообщение]"
+    usage: "§7/gov [Сообщение]"
   d:
     description: "Отправление сообщения в департамент"
     usage: "§7/d [Сообщение]"
@@ -24,19 +24,19 @@ commands:
     usage: "§7/fmeria reload"
   invite:
     description: "Пригласить игрока"
-    usage: /invite <никнейм>
+    usage: "§7/invite [Никнейм]"
   uninvite:
     description: "Уволить игрока"
-    usage: /uninvite <никнейм>
+    usage: "§7/uninvite [Никнейм]"
   rb:
     description: "НРП Рация фракции"
-    usage: /rb <текст>
+    usage: "/rb [Сообщение]"
   fonline:
     description: "Игрока которые в сети фракции"
     usage: /fonline 
   rr:
     description: "РП Рация фракции"
-    usage: /rr <текст>
+    usage: "§7/rr [Сообщение]"
   fhome:
     description: "Телепортация на базу фракции"
     usage: /fhome
@@ -48,10 +48,10 @@ commands:
     usage: /leaders
   inv:
     description: "Принять или отклонить приглашение"
-    usage: /inv
+    usage: "§7/inv [accept/decline]"
   uprang:
     description: "Повысить игрока"
-    usage: /uprang <никнейм>
+    usage: "/uprang [Никнейм]"
   fblock:
     description: "Заблокировать игрока"
     usage: "§7/fblock [Никнейм]"
@@ -69,13 +69,13 @@ commands:
     usage: "§7/funvig [Никнейм]"
   setfname:
     description: "Установить название рангу"
-    usage: /setfname <ранг> <никнейм>
+    usage: "/setfname [Ранг/name] [Название]"
   setrank:
     description: "Установить ранг игроку"
-    usage: /setrank 
+    usage: "§7/setrank [Никнейм][Фракция][Ранг](Отладка)"
   setsalary:
     description: "Установить зарплату рангу"
-    usage: /setsalary <ранг> <количество>
+    usage: "§7/setsalary [Ранг] [Количество]"
   fbalance:
     description: "Управление балансом фракции"
     usage: /fbalance
@@ -89,4 +89,7 @@ commands:
 permissions:
   fmeria.reload:
     description: "Право на перезапуск плагина"
-    default: true
+    default: op
+  fmeria.setrank:
+    description: "Право на выдачу рангов"
+    default: op

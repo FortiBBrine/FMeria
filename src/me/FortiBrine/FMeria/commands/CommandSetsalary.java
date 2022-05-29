@@ -3,6 +3,7 @@ package me.FortiBrine.FMeria.commands;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -27,15 +28,15 @@ public class CommandSetsalary implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length<2) {
-			p.sendMessage("§7/setsalary [Ранг] [Количество]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -54,7 +55,9 @@ public class CommandSetsalary implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<10) {
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size() - 1;
+		if (rank<needRank) {
 			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
@@ -62,31 +65,37 @@ public class CommandSetsalary implements CommandExecutor {
 		try {
 			salary = Integer.parseInt(args[1]);
 		} catch (NumberFormatException nfe) {
-			p.sendMessage("§4Ошибка:§c Введите число!");
+			p.sendMessage(messageConfig.getString("message.NumberFormatException"));
 			return true;
 		}
 		int rang;
 		try {
 			rang = Integer.parseInt(args[0]);
 		} catch (NumberFormatException nfe) {
-			p.sendMessage("§4Ошибка:§c Введите число!");
+			p.sendMessage(messageConfig.getString("message.NumberFormatException"));
 			return true;
 		}
-		if (rang>11 || rang<1) {
-			p.sendMessage("§4Ошибка:§f Нет возможности отредактировать данный ранг!");
+		if (rang>ranks.size() || rang<1) {
+			p.sendMessage(messageConfig.getString("message.rankLimit"));
 			return true;
 		}
 		plugin.getConfig().set(faction+".salary."+rang, salary);
 		plugin.saveConfig();
 		plugin.reloadConfig();
 		
+		String message = messageConfig.getString("message.setsalary");
 		
-		String rankname = plugin.getConfig().getString(faction+".ranks."+rang);
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%rank", ranks.get(rang - 1));
+		message = message.replace("%user", p.getName());
+		message = message.replace("%player", p.getDisplayName());
+		message = message.replace("%salary", ""+salary);
+		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 		for (Player ps : Bukkit.getOnlinePlayers()) {
 			if (players.contains(ps.getName())) {
-				ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §f"+p.getName()+" установил зарплату для "+rankname+" в размере: "+salary+"!");
+				ps.sendMessage(message);
 			}
 		}
 		return true;

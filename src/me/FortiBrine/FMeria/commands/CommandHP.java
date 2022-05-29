@@ -26,15 +26,15 @@ public class CommandHP implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length<1) {
-			p.sendMessage("§7/hp [никнейм]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -81,8 +81,10 @@ public class CommandHP implements CommandExecutor {
 		
 		String message = messageConfig.getString("message.playerHeal");
 		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
-		message = message.replace("%player2", player.getName());
-		message = message.replace("%player", p.getName());
+		message = message.replace("%user2", player.getName());
+		message = message.replace("%user1", p.getName());
+		message = message.replace("%player1", p.getDisplayName());
+		message = message.replace("%player2", player.getDisplayName());
 		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
@@ -93,7 +95,11 @@ public class CommandHP implements CommandExecutor {
 		}
 		
 		message = messageConfig.getString("message.playerHealMessage");
-		message = message.replace("%player", p.getName());
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%user2", player.getName());
+		message = message.replace("%user1", p.getName());
+		message = message.replace("%player1", p.getDisplayName());
+		message = message.replace("%player2", player.getDisplayName());
 		player.sendMessage(message);
 		
 		return true;

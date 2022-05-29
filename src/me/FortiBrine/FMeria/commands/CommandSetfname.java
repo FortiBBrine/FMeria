@@ -30,15 +30,15 @@ public class CommandSetfname implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length<2) {
-			p.sendMessage("§7/setfname [Ранг/name] [Название]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -57,7 +57,9 @@ public class CommandSetfname implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<10) {
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size() - 1;
+		if (rank<needRank) {
 			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
@@ -70,13 +72,13 @@ public class CommandSetfname implements CommandExecutor {
 			for (String nm : aargs) name+= (nm+" ");
 			name = name.trim();
 			if (name.length()>15) {
-				p.sendMessage("§4Ошибка:§c Название фракции должно не иметь больше 15 символов.");
+				p.sendMessage(messageConfig.getString("message.sizeFactionNameLimit"));
 				return true;
 			}
 			plugin.getConfig().set(faction+".name", name);
 			plugin.saveConfig();
 			plugin.reloadConfig();
-			p.sendMessage("§cФракция теперь имеет название - "+name);
+			p.sendMessage(messageConfig.getString("message.changeFactionName").replace("%faction", name));
 			
 			return true;
 		}
@@ -84,11 +86,11 @@ public class CommandSetfname implements CommandExecutor {
 		try {
 			rang = Integer.parseInt(args[0]);	
 		} catch (NumberFormatException nfe) {
-			p.sendMessage("§4Ошибка: §cВведите число!");
+			p.sendMessage(messageConfig.getString("message.NumberFormatException"));
 			return true;
 		}
-		if (rang<1 || rang>11) {
-			p.sendMessage("§4Ошибка: §cВведите число!");
+		if (rang<1 || rang>ranks.size()) {
+			p.sendMessage(messageConfig.getString("message.rankLimit"));
 			return true;
 		}
 		
@@ -99,20 +101,29 @@ public class CommandSetfname implements CommandExecutor {
 		for (String nm : aargs) name+= (nm+" ");
 		name = name.trim();
 		if (name.length()>15) {
-			p.sendMessage("§4Ошибка:§c Название роли должно не иметь больше 15 символов.");
+			p.sendMessage(messageConfig.getString("message.sizeRankNameLimit"));
 			return true;
 		}
-		String oldrankname = plugin.getConfig().getString(faction+".ranks."+rang);
+		String oldrankname = ranks.get(rang - 1);
 		String newrankname = name;
-		plugin.getConfig().set(faction+".ranks."+rang, newrankname);
+		ranks.set(rang - 1, newrankname);
+		plugin.getConfig().set(faction+".ranks", ranks);
 		plugin.saveConfig();
 		plugin.reloadConfig();
+		
+		String message = messageConfig.getString("message.СЃhangeRankName");
+		
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%user", p.getName());
+		message = message.replace("%player", p.getDisplayName());		
+		message = message.replace("%oldRank", oldrankname);
+		message = message.replace("%newRank", newrankname);
 		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 		for (Player ps : Bukkit.getOnlinePlayers()) {
 			if (players.contains(ps.getName())) {
-				ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §f"+p.getName()+" сменил название роли "+oldrankname+" на "+newrankname+" !");
+				ps.sendMessage(message);
 			}
 		}
 		return true;

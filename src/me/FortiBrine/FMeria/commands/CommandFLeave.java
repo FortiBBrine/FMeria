@@ -26,11 +26,12 @@ public class CommandFLeave implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length!=1 || !args[0].equals("leave")) {
 			return false;
@@ -54,7 +55,7 @@ public class CommandFLeave implements CommandExecutor {
 		
 		String message = messageConfig.getString("message.fleave");
 		
-		message = message.replace("%faction", faction+".name");
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
 		message = message.replace("%user", p.getName());
 		message = message.replace("%player", p.getDisplayName());
 		

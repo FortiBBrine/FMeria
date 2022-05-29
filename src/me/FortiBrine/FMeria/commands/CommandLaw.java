@@ -32,12 +32,13 @@ public class CommandLaw implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
 		Player p = (Player) sender;
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		
 		if (args.length<1 || (!this.subcommands.contains(args[0]))) {
 			for (String s : messageConfig.getStringList("message.lawUsage")) {
@@ -45,7 +46,16 @@ public class CommandLaw implements CommandExecutor {
 			}
 			return true;
 		}
-		
+		if (args[0].equals("list")) {
+			Inventory inv = plugin.lawInv;
+			p.closeInventory();
+			p.openInventory(inv);
+				
+			plugin.lawInventory.put(p, inv);
+			plugin.lawCmd.put(p, 0);
+				
+			return true;
+		}
 		String faction = null;
 		for (String css : plugin.getConfig().getKeys(false)) {
 			ConfigurationSection cs = plugin.getConfig().getConfigurationSection(css);
@@ -238,15 +248,6 @@ public class CommandLaw implements CommandExecutor {
 			plugin.lawUtil.set(IDc+".list."+IDlaw+".time", time);
 			p.sendMessage(messageConfig.getString("message.successSetLawTime"));
 			plugin.loadLawInventory();
-			return true;
-		} else if (args[0].equals("list")) {
-			Inventory inv = plugin.lawInv;
-			p.closeInventory();
-			p.openInventory(inv);
-			
-			plugin.lawInventory.put(p, inv);
-			plugin.lawCmd.put(p, 0);
-			
 			return true;
 		}
 		

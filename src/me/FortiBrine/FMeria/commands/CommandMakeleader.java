@@ -26,12 +26,13 @@ public class CommandMakeleader implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
 		Player p = (Player) sender;
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		FileConfiguration config = plugin.getConfig();
 		
 		String faction = null;

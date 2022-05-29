@@ -1,8 +1,8 @@
 package me.FortiBrine.FMeria.commands;
 
-
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -29,16 +29,13 @@ public class CommandSetfhome implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
-			return true;
-		}
 		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
-		Player p = (Player) sender;
-		if (args.length<1) {
-			p.sendMessage("§7/setfhome [yes]");
+
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
+		Player p = (Player) sender;
 		
 		String faction = null;
 		for (String css : plugin.getConfig().getKeys(false)) {
@@ -56,14 +53,13 @@ public class CommandSetfhome implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<11) {
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size();
+		if (rank<needRank) {
 			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
-		if (!args[0].equals("yes")) {
-			p.sendMessage("§7/setfhome [yes]");
-			return true;
-		}
+
 		Location loc = p.getLocation();
 		World w = loc.getWorld();
 		int x = (int) loc.getX();
@@ -75,7 +71,7 @@ public class CommandSetfhome implements CommandExecutor {
 		plugin.getConfig().set(faction+".fhome.z", z);
 		plugin.saveConfig();
 		plugin.reloadConfig();
-		p.sendMessage("§4Информация:§fУспешно!");
+		p.sendMessage(messageConfig.getString("message.changeFHome"));
 		
 		return true;
 	}

@@ -4,6 +4,7 @@ package me.FortiBrine.FMeria.commands;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -29,15 +30,15 @@ public class CommandInvite implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
+
 		if (!(sender instanceof Player)) {
-			sender.sendMessage("Вы не игрок!");
+			sender.sendMessage(messageConfig.getString("message.notPlayer"));
 			return true;
 		}
-		YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(this.messages);
 		Player p = (Player) sender;
 		if (args.length!=1) {
-			p.sendMessage("§7/invite [Никнейм]");
-			return true;
+			return false;
 		}
 		
 		String faction = null;
@@ -56,7 +57,9 @@ public class CommandInvite implements CommandExecutor {
 			return true;
 		}
 		int rank = plugin.getConfig().getInt(faction+".users."+p.getName());
-		if (rank<9) {
+		List<String> ranks = plugin.getConfig().getStringList(faction+".ranks");
+		int needRank = ranks.size() - 2;
+		if (rank<needRank) {
 			p.sendMessage(messageConfig.getString("message.nonRank"));
 			return true;
 		}
@@ -72,7 +75,7 @@ public class CommandInvite implements CommandExecutor {
 		}
 		
 		if ((plugin.getConfig().getConfigurationSection(faction+".fblock")!=null) && (plugin.getConfig().getConfigurationSection(faction+".fblock").getKeys(false).contains(p2.getName()))) {
-			p.sendMessage("§cИгрок в чс вашей фракции!");
+			p.sendMessage(messageConfig.getString("message.playerInBlackList"));
 			return true;
 		} 
 		String faction2 = null;
@@ -87,18 +90,33 @@ public class CommandInvite implements CommandExecutor {
 			}
 		}
 		if (faction2!=null) {
-			p.sendMessage("§cИгрок уже состоит во фракции!");
+			p.sendMessage(messageConfig.getString("message.alreadyInFaction"));
 			return true;
 		}
+		
+		String message = messageConfig.getString("message.inviteAll");
+		
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%user1", p.getName());
+		message = message.replace("%user2", p2.getName());
+		message = message.replace("%player1", p.getDisplayName());
+		message = message.replace("%player2", p2.getDisplayName());
+		
 		Set<String> players = new HashSet<String>();
 		players=plugin.getConfig().getConfigurationSection(faction+".users").getKeys(false);
 		for (Player ps : Bukkit.getOnlinePlayers()) {
 			if (players.contains(ps.getName())) {
-				ps.sendMessage("§f"+plugin.getConfig().getString(faction+".name")+"§7 >>> §fИгрок "+p.getName()+" пригласил "+p2.getName()+" во фракцию!");
+				ps.sendMessage(message);
 			}
 		}
-		p2.sendMessage("§7Вас пригласили в фракцию "+plugin.getConfig().getString(faction+".name")+"!§f У вас 60 секунд чтобы принять! /inv accept");
-		plugin.invtime.put(p2, System.currentTimeMillis()+(60*1000));
+		
+		message = messageConfig.getString("message.invite");
+		message = message.replace("%faction", plugin.getConfig().getString(faction+".name"));
+		message = message.replace("%user", p.getName());
+		message = message.replace("%player", p.getDisplayName());
+		
+		p2.sendMessage(message);
+		plugin.invtime.put(p2, System.currentTimeMillis()+(messageConfig.getInt("value.invite")*1000));
 		plugin.invfrac.put(p2, faction);
 		return true;
 	}
